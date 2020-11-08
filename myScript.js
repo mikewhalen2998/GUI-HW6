@@ -1,7 +1,7 @@
 /*   Michael Whalen
      Michael_Whalen@student.uml.edu
      Michael Whalen Computer Science Student in 91.61 GUI Prgoramming I Umass Lowell
-     11/7/20
+     11/8/20
      Multiplication table made using javascript with html/css. This is the javascript for the page. Added jqiuery validation
 */
 
@@ -12,14 +12,13 @@ $().ready(function(){
 
   //Checks if max is grearer than min.
 jQuery.validator.addMethod('greaterThan', function (value, element, param) {
-  return this.optional(element) || parseInt(value) < parseInt($(param).val());
+  return this.optional(element) || $(param).val()=='' || parseInt(value) <= parseInt($(param).val());
 }, 'Invalid value');
 
 //Checks if max is less than min
 jQuery.validator.addMethod('lessThan', function (value, element, param) {
-    return this.optional(element) || parseInt(value) > parseInt($(param).val());
+    return this.optional(element) || $(param).val()=='' ||parseInt(value) >= parseInt($(param).val());
   }, 'Invalid value');
-//Grab form and validate entered input
 
 //Got help from here https://jqueryvalidation.org/ to do this validation
 //Also from here for the .submit function https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit/19454378
@@ -27,29 +26,36 @@ jQuery.validator.addMethod('lessThan', function (value, element, param) {
 $("#inputForm").submit(function(e){
   e.preventDefault();
 }).validate({
-
  //Set rules for each input and the input's entered must follow these rules
- //Required checks if the user has input something and if not it will prompt them with a message. Improper input such as special characters or letters are handled by default and return "please enter a valid number". You can enter numbers like 1.2 but my function auto correct thems to the integer so if you enter 2.2 or 2.9 it still equates to 2.
   rules:{
     "minRowNumber":{
-      required:true,
-      range:[-100, 100],
-      greaterThan:'#maxRowNumber'
+      required:true,       //Checks if field is empty
+      range:[-100, 100],   // Makes sure number is in range so program doesn't crash
+      greaterThan:'#maxRowNumber', //Checks if min is greater than max
+      number:true, //Makes sure the input is a number
+      digits:true, //Makes sure no deciamls can be added.
     },
     "maxRowNumber":{
-      required:true,
-      range:[-100, 100],
-      lessThan:'#minRowNumber'
+      required:true, //Checks if field is empty
+      range:[-100, 100],  // Makes sure number is in range so program doesn't crash
+      lessThan:'#minRowNumber', //Checks if max is less than min
+      number:true, //Makes sure the input is a number
+      digits:true, //Makes sure no deciamls can be added.
     },
+    //The same thing applies for columns down here. I don't wanna cloud my code with a ton of comments.
     "minColumnNumber":{
       required:true,
       range:[-100, 100],
-      greaterThan:'#maxColumnNumber'
+      greaterThan:'#maxColumnNumber',
+      number:true,
+      digits:true,
     },
     "maxColumnNumber":{
       required:true,
       range:[-100, 100],
-      lessThan:'#minColumnNumber'
+      lessThan:'#minColumnNumber',
+      number:true,
+      digits:true,
     },
   },
   //Custom error messages for each form input
@@ -57,32 +63,34 @@ $("#inputForm").submit(function(e){
    minRowNumber:{
      required:"Please enter a valid integer for minRowNumber",
      range:"Please enter a number between -100 to 100",
-     greaterThan:"Number must be less than max row"
+     greaterThan:"Number must be less than max row",
+     number:"Please enter an integer for Minimum row number",
+     digits:"No decimals, only integers",
    },
    maxRowNumber:{
      required:"Please enter a valid integer for maxRowNumber",
      range:"Please enter a number between -100 to 100",
-     lessThan:"Number must be greater than min row"
+     lessThan:"Number must be greater than min row",
+     number:"Please enter an integer for Max row number",
+     digits:"No decimals, only integers",
    },
    minColumnNumber:{
     required: "Please enter a valid integer for minColumnNumber",
     range:"Please enter a number between -100 to 100",
-    greaterThan:"Number must be less than max column"
+    greaterThan:"Number must be less than max column",
+    number:"Please enter an integer for Minimum column number",
+    digits:"No decimals, only integers",
   },
    maxColumnNumber:{
      required:"Please enter a valid integer for maxColumnNumber",
      range:"Please enter a number between -100 to 100",
-     lessThan:"Number must be greater than min column"
+     lessThan:"Number must be greater than min column",
+     number:"Please enter an integer for Max column number",
+     digits:"No decimals, only integers",
    },
  },
+ });
 });
-
-});
-
-
-
-
-
 //This function reads in the numbers and generates a table based off input given.
 function readInNumbers()
 {
@@ -91,14 +99,10 @@ function readInNumbers()
   var b = parseInt(document.getElementById("maxRowNumber").value);
   var c = parseInt(document.getElementById("minColumnNumber").value);
   var d = parseInt(document.getElementById("maxColumnNumber").value);
-
       //Change "test" (error message paragraph) to be empty at the beginning of every call to readInNumbers()
-      document.getElementById("test").innerHTML="";
-
-      //Error handling section testing all possible outcomes
-
-
-      //These 4 if statements make sure that the input entered is an integer. If they are not the user will be notified to change the incorrect value(s).
+  document.getElementById("test").innerHTML="";
+  //Error handling section testing all possible outcomes
+  //These 4 if statements make sure that the input entered is an integer. If they are not the user will be notified to change the incorrect value(s).
       if(Number.isInteger(a)!=true)
       {
         return;
@@ -137,8 +141,6 @@ function readInNumbers()
   // X and Y get the proper number of rows and columns needed
   var x_bound= (b-a) + 1;
   var y_bound= (d-c) + 1;
-
-
   var i;
   var j;
   var test1=0;
@@ -146,14 +148,9 @@ function readInNumbers()
   var test1Array= new Array(y_bound);
   var test2Array= new Array(x_bound);
 
-
 //A big help for a lot of my code is linked below this comment. This helped me create my table.
 //https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Traversing_an_HTML_table_with_JavaScript_and_DOM_Interfaces
   var body = document.getElementsByTagName("body")[0];
-
-
-
-
   // creates a <table> element and a <tbody> element and a <div>
   var tbl = document.createElement("table");
   var tblBody = document.createElement("tbody");
@@ -164,8 +161,6 @@ function readInNumbers()
   for (var i = 0; i <=x_bound; i++) {
     // creates a table row
     var row = document.createElement("tr");
-
-
     for (var j = 0; j <=y_bound; j++) {
       // Create a <td> element and a text node, make the text
       // node the contents of the <td>, and put the <td> at
@@ -181,7 +176,6 @@ function readInNumbers()
         var cellText = document.createTextNode(c++);
         test1=cellText.nodeValue;
         test1Array[j]=test1;
-
       }
       //If j==0 then fill in the beginning of each row
       else if(j==0){
@@ -192,28 +186,22 @@ function readInNumbers()
       //After storing the beginning column and row values. I stored them each in an array and then multiply the values from each array with each other in sequential order.
       else{
       var cellText = document.createTextNode(test1Array[j]*test2Array[i]);
-
     }
     //Link everything together
       cell.appendChild(cellText);
       row.appendChild(cell);
     }
-
     // add the row to the end of the table body
     tblBody.appendChild(row);
   }
-
   // put the <tbody> in the <table>
   tbl.appendChild(tblBody);
-
   //put <table> inside the <div>
   wrapper.appendChild(tbl);
-
   // appends <wrapper> into <body>
   body.appendChild(wrapper);
   //Create border for each td element
   tbl.setAttribute("border", "2");
  //Create an id for the table so later on I can delete it whenever the submit button is pressed
   tbl.setAttribute("id","myTable");
-
 }
