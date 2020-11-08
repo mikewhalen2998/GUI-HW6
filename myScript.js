@@ -8,6 +8,17 @@
 //Beginning of jquery validation function
 $().ready(function(){
 
+  //Used this as inspiration to create both methods https://stackoverflow.com/questions/20803900/using-jquery-validation-greaterthan-function
+
+  //Checks if max is grearer than min.
+jQuery.validator.addMethod('greaterThan', function (value, element, param) {
+  return this.optional(element) || parseInt(value) < parseInt($(param).val());
+}, 'Invalid value');
+
+//Checks if max is less than min
+jQuery.validator.addMethod('lessThan', function (value, element, param) {
+    return this.optional(element) || parseInt(value) > parseInt($(param).val());
+  }, 'Invalid value');
 //Grab form and validate entered input
 
 //Got help from here https://jqueryvalidation.org/ to do this validation
@@ -22,30 +33,46 @@ $("#inputForm").submit(function(e){
   rules:{
     "minRowNumber":{
       required:true,
+      range:[-100, 100],
+      greaterThan:'#maxRowNumber'
     },
     "maxRowNumber":{
       required:true,
+      range:[-100, 100],
+      lessThan:'#minRowNumber'
     },
     "minColumnNumber":{
       required:true,
+      range:[-100, 100],
+      greaterThan:'#maxColumnNumber'
     },
     "maxColumnNumber":{
       required:true,
+      range:[-100, 100],
+      lessThan:'#minColumnNumber'
     },
   },
   //Custom error messages for each form input
   messages:{
    minRowNumber:{
-     required:"Please enter a valid integer for minRowNumber"
+     required:"Please enter a valid integer for minRowNumber",
+     range:"Please enter a number between -100 to 100",
+     greaterThan:"Number must be less than max row"
    },
    maxRowNumber:{
-     required:"Please enter a valid integer for maxRowNumber"
+     required:"Please enter a valid integer for maxRowNumber",
+     range:"Please enter a number between -100 to 100",
+     lessThan:"Number must be greater than min row"
    },
    minColumnNumber:{
-    required: "Please enter a valid integer for minColumnNumber"
+    required: "Please enter a valid integer for minColumnNumber",
+    range:"Please enter a number between -100 to 100",
+    greaterThan:"Number must be less than max column"
   },
    maxColumnNumber:{
-     required:"Please enter a valid integer for maxColumnNumber"
+     required:"Please enter a valid integer for maxColumnNumber",
+     range:"Please enter a number between -100 to 100",
+     lessThan:"Number must be greater than min column"
    },
  },
 });
@@ -70,6 +97,7 @@ function readInNumbers()
 
       //Error handling section testing all possible outcomes
 
+
       //These 4 if statements make sure that the input entered is an integer. If they are not the user will be notified to change the incorrect value(s).
       if(Number.isInteger(a)!=true)
       {
@@ -91,13 +119,11 @@ function readInNumbers()
 
        //if min row is greater than max row than return error message
       if(a > b){
-        document.getElementById("test").innerHTML="Please enter a lower minimum row number";
         return;
       }
       //if min col is greater than max col than return error message
       if(c > d)
       {
-            document.getElementById("test").innerHTML="Please enter a lower minimum column number";
             return;
       }
 

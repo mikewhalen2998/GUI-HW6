@@ -11,12 +11,16 @@
 td:first-child{
 background-color: black;
 color:white;
+padding:10px;
+margin:10px;
 }
 
 
 tr:first-child{
   background-color: black;
   color:white;
+  padding:10px;
+  margin:10px;
 }
 
 .form-style{
