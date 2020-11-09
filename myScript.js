@@ -20,6 +20,10 @@ jQuery.validator.addMethod('lessThan', function (value, element, param) {
     return this.optional(element) || $(param).val()=='' ||parseInt(value) >= parseInt($(param).val());
   }, 'Invalid value');
 
+
+jQuery.validator.addMethod('isInteger', function(value, element){
+  return this.optional(element) || String(value).indexOf('.')==-1;
+},'Invalid value');
 //Got help from here https://jqueryvalidation.org/ to do this validation
 //Also from here for the .submit function https://stackoverflow.com/questions/19454310/stop-form-refreshing-page-on-submit/19454378
 //e.preventdefault prevents page from reloading every time submit is called. If i didn't include this the table would never show up.
@@ -30,32 +34,33 @@ $("#inputForm").submit(function(e){
   rules:{
     "minRowNumber":{
       required:true,       //Checks if field is empty
-      range:[-100, 100],   // Makes sure number is in range so program doesn't crash
-      greaterThan:'#maxRowNumber', //Checks if min is greater than max
       number:true, //Makes sure the input is a number
-      digits:true, //Makes sure no deciamls can be added.
+      range:[-100, 100],   // Makes sure number is in range so program doesn't crash
+      isInteger: true,
+      greaterThan:'#maxRowNumber', //Checks if min is greater than max
     },
     "maxRowNumber":{
       required:true, //Checks if field is empty
-      range:[-100, 100],  // Makes sure number is in range so program doesn't crash
-      lessThan:'#minRowNumber', //Checks if max is less than min
       number:true, //Makes sure the input is a number
-      digits:true, //Makes sure no deciamls can be added.
+      range:[-100, 100],  // Makes sure number is in range so program doesn't crash
+      isInteger: true,
+      lessThan:'#minRowNumber', //Checks if max is less than min
     },
     //The same thing applies for columns down here. I don't wanna cloud my code with a ton of comments.
     "minColumnNumber":{
       required:true,
-      range:[-100, 100],
-      greaterThan:'#maxColumnNumber',
       number:true,
-      digits:true,
+      range:[-100, 100],
+      isInteger: true,
+      greaterThan:'#maxColumnNumber',
+
     },
     "maxColumnNumber":{
       required:true,
-      range:[-100, 100],
-      lessThan:'#minColumnNumber',
       number:true,
-      digits:true,
+      range:[-100, 100],
+      isInteger: true,
+      lessThan:'#minColumnNumber',
     },
   },
   //Custom error messages for each form input
@@ -65,28 +70,28 @@ $("#inputForm").submit(function(e){
      range:"Please enter a number between -100 to 100",
      greaterThan:"Number must be less than max row",
      number:"Please enter an integer for Minimum row number",
-     digits:"No decimals, only integers",
+     isInteger:"No decimals, only integers"
    },
    maxRowNumber:{
      required:"Please enter a valid integer for maxRowNumber",
      range:"Please enter a number between -100 to 100",
      lessThan:"Number must be greater than min row",
      number:"Please enter an integer for Max row number",
-     digits:"No decimals, only integers",
+     isInteger:"No decimals, only integers"
    },
    minColumnNumber:{
     required: "Please enter a valid integer for minColumnNumber",
     range:"Please enter a number between -100 to 100",
     greaterThan:"Number must be less than max column",
     number:"Please enter an integer for Minimum column number",
-    digits:"No decimals, only integers",
+    isInteger:"No decimals, only integers"
   },
    maxColumnNumber:{
      required:"Please enter a valid integer for maxColumnNumber",
      range:"Please enter a number between -100 to 100",
      lessThan:"Number must be greater than min column",
      number:"Please enter an integer for Max column number",
-     digits:"No decimals, only integers",
+     isInteger:"No decimals, only integers"
    },
  },
  });
