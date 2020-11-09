@@ -91,9 +91,10 @@ $("#inputForm").submit(function(e){
      range:"Please enter a number between -100 to 100",
      lessThan:"Number must be greater than min column",
      number:"Please enter an integer for Max column number",
-     isInteger:"No decimals, only integers"
+     isInteger:"No decimals, only integers",
    },
  },
+ submitHandler:readInNumbers
  });
 });
 //This function reads in the numbers and generates a table based off input given.
